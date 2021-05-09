@@ -10,17 +10,6 @@ def resize(img,dim_x,dim_y):
 def flatten_pixels(img_list):
     return [color_val for pixel in img_list for color_val in pixel]
 
-def normalize_data(data):
-    return data 
-
-def num_data(dir_path):
-    top_dir = Path(dir_path)
-    true_dir_path = top_dir / 'Melanoma'
-    false_dir_path = top_dir / 'NotMelanoma'
-    true_dir = os.listdir(true_dir_path)
-    false_dir = os.listdir(false_dir_path)
-    return len(true_dir) + len(false_dir)
-
 def get_batch(txt_path,dim_x,dim_y):
 	"""
 	inputs:
