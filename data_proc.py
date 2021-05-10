@@ -43,32 +43,32 @@ def get_batch(txt_path,dim_x,dim_y):
 			with Image.open(glass_dir_path / image) as img:
 				resized_img = resize(img,dim_x,dim_y)
 				batch_x.append(np.asarray(resized_img))
-				batch_y.append(int(indx))
+				batch_y.append(np.array([1,0,0,0,0,0]))
 		elif int(indx) == 2:
 		    with Image.open(paper_dir_path / image) as img:
 		    	resized_img = resize(img,dim_x,dim_y)
 		    	batch_x.append(np.asarray(resized_img))
-		    	batch_y.append(int(indx))
+		    	batch_y.append(np.array([0,1,0,0,0,0]))
 		elif int(indx) == 3:
 			with Image.open(cardboard_dir_path / image) as img:
 				resized_img = resize(img,dim_x,dim_y)
 				batch_x.append(np.asarray(resized_img))
-				batch_y.append(int(indx))
+				batch_y.append(np.array([0,0,1,0,0,0]))
 		elif int(indx) == 4:
 			with Image.open(plastic_dir_path / image) as img:
 				resized_img = resize(img,dim_x,dim_y)
 				batch_x.append(np.asarray(resized_img))
-				batch_y.append(int(indx))
+				batch_y.append(np.array([0,0,0,1,0,0]))
 		elif int(indx) == 5:
 			with Image.open(metal_dir_path / image) as img:
 				resized_img = resize(img,dim_x,dim_y)
 				batch_x.append(np.asarray(resized_img))
-				batch_y.append(int(indx))
+				batch_y.append(np.array([0,0,0,0,1,0]))
 		elif int(indx) == 6:
 			with Image.open(trash_dir_path / image) as img:
 				resized_img = resize(img,dim_x,dim_y)
 				batch_x.append(np.asarray(resized_img))
-				batch_y.append(int(indx))
+				batch_y.append(np.array([0,0,0,0,0,1]))
 	return np.array(batch_x), np.array(batch_y)
 
 
