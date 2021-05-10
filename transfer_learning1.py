@@ -4,9 +4,9 @@ from keras.models import Sequential
 from keras.layers import Dense
 from tensorflow.keras import regularizers
 import tensorflow as tf
+import confusion_matrix
 
-
-def neural_network(X,Y,nn_dims,epochs = 500,batch_size = 25,loss='binary_crossentropy',lambd = 1e-4):
+def neural_network(X,Y,nn_dims,epochs = 500,batch_size = 15,loss='binary_crossentropy',lambd = 1e-4):
 	""" 
 	Inputs:
 		 X - training data (np.array(rows: #examples; cols: #features))
@@ -41,7 +41,7 @@ def neural_network(X,Y,nn_dims,epochs = 500,batch_size = 25,loss='binary_crossen
 
 def main():
 	#------ Training ------
-	X_train, y_train = data_proc.get_batch('archive/one-indexed-files-notrash_train.txt',224,224)
+	X_train, y_train = data_proc.get_batch('archive/one-indexed-files-notrash_test.txt',224,224)
 	m = X_train.shape[0]
 
 	# Run training data through RestNet50
@@ -52,20 +52,24 @@ def main():
 	print(A_transfer.shape)
 
 	# Train our model on output of Resnet50
-	our_model = neural_network(A_transfer, y_train,[1024,256,64,16,6],epochs = 5)
+	our_model = neural_network(A_transfer, y_train,[1024,256,64,16,6],epochs = 5,lambd=0)
 
 	# Prediction on training data
 	y_train_pred = our_model.predict(A_transfer)
 
+	np.savetxt("confusion_matrix_training.csv", confusion_matrix.generate_confusion_matrix(y_train_pred, y_train), delimiter=',')
+
 	#------ Validation ------
 	# Run validation data through RestNet50
 	X_valid, y_valid = data_proc.get_batch('archive/one-indexed-files-notrash_val.txt',224,224)
-	m = X_test.shape[0]
+	m = X_valid.shape[0]
 	A_transfer = transfer_model.predict(X_valid) # sized at (m,7,7,2048)
 	A_transfer = np.reshape(A_transfer,(m,-1)) # sized at (m,7*7*2048)
 
 	# Prediction on validation data
 	y_valid_pred = our_model.predict(A_transfer)
+
+	np.savetxt("confusion_matrix_valid.csv", confusion_matrix.generate_confusion_matrix(y_valid_pred, y_valid), delimiter=',')
 
 
 
