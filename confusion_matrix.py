@@ -4,8 +4,8 @@ import pandas as pd
 
 
 def main():
-    pred_test = np.asarray([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    label_test = np.asarray([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    pred_test = np.asarray([[0, 0, 1], [0, 0, 1], [1, 0, 0]])
+    label_test = np.asarray([[0, 0, 1], [0, 0, 1], [1, 0, 0]])
     np.savetxt("test2.csv", generate_confusion_matrix(pred_test, label_test), delimiter=',')
     print("recall test: " + str(compute_ma_recall(pred_test, label_test)))
 
@@ -42,17 +42,23 @@ def compute_ma_precision(preds, labels):
     tp_arr = np.zeros(6)
     fp_arr = np.zeros(6)
     tp_arr[0] = len([x for x in labels if np.argmax(x) == 0])
-    fp_arr[0] = len([x for x in predict_labels if np.argmax(x) == 0]) - tp_arr[0]
+    fp_arr[0] = max(len([x for x in predict_labels if np.argmax(x) == 0]) - tp_arr[0], 0)
+    print(fp_arr[0])
     tp_arr[1] = len([x for x in labels if np.argmax(x) == 1])
-    fp_arr[1] = len([x for x in predict_labels if np.argmax(x) == 1]) - tp_arr[1]
+    fp_arr[1] = max(len([x for x in predict_labels if np.argmax(x) == 1]) - tp_arr[1],0)
+    print(fp_arr[1])
     tp_arr[2] = len([x for x in labels if np.argmax(x) == 2])
-    fp_arr[2] = len([x for x in predict_labels if np.argmax(x) == 2]) - tp_arr[2]
+    fp_arr[2] = max(len([x for x in predict_labels if np.argmax(x) == 2]) - tp_arr[2],0)
+    print(fp_arr[2])
     tp_arr[3] = len([x for x in labels if np.argmax(x) == 3])
-    fp_arr[3] = len([x for x in predict_labels if np.argmax(x) == 3]) - tp_arr[3]
+    fp_arr[3] = max(len([x for x in predict_labels if np.argmax(x) == 3]) - tp_arr[3],0)
+    print(fp_arr[3])
     tp_arr[4] = len([x for x in labels if np.argmax(x) == 4])
-    fp_arr[4] = len([x for x in predict_labels if np.argmax(x) == 4]) - tp_arr[4]
+    fp_arr[4] = max(len([x for x in predict_labels if np.argmax(x) == 4]) - tp_arr[4],0)
+    print(fp_arr[4])
     tp_arr[5] = len([x for x in labels if np.argmax(x) == 5])
-    fp_arr[5] = len([x for x in predict_labels if np.argmax(x) == 5]) - tp_arr[5]
+    fp_arr[5] = max(len([x for x in predict_labels if np.argmax(x) == 5]) - tp_arr[5],0)
+    print(fp_arr[5])
     ma_precision = np.sum(tp_arr) / (np.sum(tp_arr) + np.sum(fp_arr))
     return ma_precision
 
@@ -68,12 +74,12 @@ def compute_ma_recall(preds, labels):
     tp_arr[4] = len([x for x in labels if np.argmax(x) == 4])
     tp_arr[5] = len([x for x in labels if np.argmax(x) == 5])
 
-    fn_arr[0] = len([x for x in predict_labels if np.argmax(x) != 0]) - (np.sum(tp_arr) - tp_arr[0])
-    fn_arr[1] = len([x for x in predict_labels if np.argmax(x) != 1]) - (np.sum(tp_arr) - tp_arr[1])
-    fn_arr[2] = len([x for x in predict_labels if np.argmax(x) != 2]) - (np.sum(tp_arr) - tp_arr[2])
-    fn_arr[3] = len([x for x in predict_labels if np.argmax(x) != 3]) - (np.sum(tp_arr) - tp_arr[3])
-    fn_arr[4] = len([x for x in predict_labels if np.argmax(x) != 4]) - (np.sum(tp_arr) - tp_arr[4])
-    fn_arr[5] = len([x for x in predict_labels if np.argmax(x) != 5]) - (np.sum(tp_arr) - tp_arr[5])
+    fn_arr[0] = max(len([x for x in predict_labels if np.argmax(x) != 0]) - (np.sum(tp_arr) - tp_arr[0]),0)
+    fn_arr[1] = max(len([x for x in predict_labels if np.argmax(x) != 1]) - (np.sum(tp_arr) - tp_arr[1]),0)
+    fn_arr[2] = max(len([x for x in predict_labels if np.argmax(x) != 2]) - (np.sum(tp_arr) - tp_arr[2]),0)
+    fn_arr[3] = max(len([x for x in predict_labels if np.argmax(x) != 3]) - (np.sum(tp_arr) - tp_arr[3]),0)
+    fn_arr[4] = max(len([x for x in predict_labels if np.argmax(x) != 4]) - (np.sum(tp_arr) - tp_arr[4]),0)
+    fn_arr[5] = max(len([x for x in predict_labels if np.argmax(x) != 5]) - (np.sum(tp_arr) - tp_arr[5]),0)
 
     ma_recall = np.sum(tp_arr) / (np.sum(tp_arr) + np.sum(fn_arr))
     return ma_recall
