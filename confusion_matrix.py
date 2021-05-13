@@ -5,9 +5,9 @@ import pandas as pd
 
 def main():
     pred_test = np.asarray([[0, 0, 1], [0, 0, 1], [1, 0, 0]])
-    label_test = np.asarray([[0, 0, 1], [0, 0, 1], [1, 0, 0]])
+    label_test = np.asarray([[1, 0, 0], [0, 0, 1], [1, 0, 0]])
     np.savetxt("test2.csv", generate_confusion_matrix(pred_test, label_test), delimiter=',')
-    print("recall test: " + str(compute_ma_recall(pred_test, label_test)))
+    print("precision test: " + str(compute_ma_precision_recall(pred_test, label_test)))
 
 # convert softmax output to binary values
 def format_predictions(softmax_output):
@@ -62,6 +62,33 @@ def compute_ma_precision(preds, labels):
     ma_precision = np.sum(tp_arr) / (np.sum(tp_arr) + np.sum(fp_arr))
     return ma_precision
 
+
+# Compute micro averaged precision. USE THIS METHOD
+def compute_ma_precision_recall(preds, labels):
+    prediction_labels = format_predictions(preds)
+
+    # Compute true positives
+    tp = prediction_labels * labels
+    print("tp matrix:")
+    print(tp)
+    # Compute false positives
+    fp = prediction_labels > labels
+    print("fp matrix:")
+    print(fp)
+    fn = prediction_labels < labels
+    print(f"fn matrix: {fn}")
+    num_tp = np.sum(tp)
+    num_fp = np.sum(fp)
+    num_fn = np.sum(fn)
+    print(f"sum of fn: {num_fn}")
+
+    ma_prec = num_tp / (num_tp + num_fp)
+    ma_recall = num_tp / (num_tp + num_fn)
+    return (ma_recall, ma_prec)
+
+
+            
+
 # Compute recall
 def compute_ma_recall(preds, labels):
     predict_labels = format_predictions(preds)
@@ -86,8 +113,7 @@ def compute_ma_recall(preds, labels):
 
 # Compute F1
 def compute_ma_F1Score(preds, labels):
-    ma_recall = compute_ma_recall(preds, labels)
-    ma_precision = compute_ma_precision(preds, labels)
+    ma_recall, ma_precision = compute_ma_precision_recall(preds, labels)
     return 2/((1/ma_recall) + (1/ma_precision))
 
 if __name__ == "__main__":
