@@ -16,7 +16,7 @@ def main():
 	A_transfer = np.reshape(util.normalize(A_transfer),(m,-1)) # sized at (m,7*7*1024)
 
 	# Train our model on output of Resnet50
-	our_model = util.neural_network(A_transfer, y_train,[1024,256,64,16,6],epochs = 2,lambd=1e-4)
+	our_model = util.neural_network(A_transfer, y_train,[1024,256,64,16,6],epochs = 10,lambd=1e-4)
 	print(our_model.summary())
 
 	# Prediction on training data

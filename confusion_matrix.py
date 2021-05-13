@@ -69,18 +69,12 @@ def compute_ma_precision_recall(preds, labels):
 
     # Compute true positives
     tp = prediction_labels * labels
-    print("tp matrix:")
-    print(tp)
     # Compute false positives
     fp = prediction_labels > labels
-    print("fp matrix:")
-    print(fp)
     fn = prediction_labels < labels
-    print(f"fn matrix: {fn}")
     num_tp = np.sum(tp)
     num_fp = np.sum(fp)
     num_fn = np.sum(fn)
-    print(f"sum of fn: {num_fn}")
 
     ma_prec = num_tp / (num_tp + num_fp)
     ma_recall = num_tp / (num_tp + num_fn)
