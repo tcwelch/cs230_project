@@ -7,7 +7,9 @@ import confusion_matrix
 
 def main():
 	#------ Training ------
-	X_train, y_train = data_proc.get_batch('archive/one-indexed-files-notrash_train.txt',224,224)
+	X1, y1 = data_proc.get_batch('archive/one-indexed-files-notrash_train.txt',224,224)
+	X_train = np.array(X1)
+	y_train = np.array(y1)
 	m = X_train.shape[0]
 
 	# Run training data through RestNet50
@@ -26,7 +28,9 @@ def main():
 
 	#------ Validation ------
 	# Run validation data through RestNet50
-	X_valid, y_valid = data_proc.get_batch('archive/one-indexed-files-notrash_val.txt',224,224)
+	X2, y2 = data_proc.get_batch('archive/one-indexed-files-notrash_val.txt',224,224)
+	X_valid = np.array(X2)
+	y_valid = np.array(y2)
 	m = X_valid.shape[0]
 	A_transfer = transfer_model.predict(util.normalize(X_valid)) # sized at (m,7,7,2048)
 	A_transfer = np.reshape(util.normalize(A_transfer),(m,-1)) # sized at (m,7*7*2048)
