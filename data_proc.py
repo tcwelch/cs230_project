@@ -83,21 +83,14 @@ def get_aug(X,y,num_to_add):
 	for i in range(len(num_to_add)):
 		#creates a set of all X's with label i
 		X_to_aug = [X[idx] for idx in range(len(y_indx)) if y_indx[idx] == i]
-		# print(f"num_to_add[i]: {num_to_add[i]}")
-		# print(f"len(X_to_aug): {len(X_to_aug)}")
-		# print(f"X_to_aug[0].shape: {X_to_aug[0].shape}")
+
 		#adds randomly augmented samples to X_aug from class with number specified by num_to_add(i)
 		for j in range(num_to_add[i]):
 			#chooses random sample from X_to_aug and removes it
 			aug_choice = np.random.choice(range(len(X_to_aug)))
 			example_to_aug = X_to_aug[aug_choice]
-			# print(f"len(X_to_aug): {len(X_to_aug)}")
-			# print(f"aug_choice: {aug_choice}")
-			# print(f"example_to_aug.shape: {example_to_aug.shape}")
 
 			#chooses random augmentaiton to example_to_remove and adds it to X_aug
-			# new_X = np.flip(example_to_aug,axis=0)
-			# print(f"new_X.shape: {new_X.shape}")
 			rand_aug = np.random.randint(5)
 			if rand_aug == 0:
 				X_aug.append(np.rot90(example_to_aug, k=1, axes=(0, 1)))

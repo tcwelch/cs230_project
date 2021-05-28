@@ -16,11 +16,11 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import roc_auc_score
 
 def main():
-    pred_test = np.asarray([[0, 0, 1], [0, 0, 1], [1, 0, 0]])
-    label_test = np.asarray([[1, 0, 0], [0, 0, 1], [1, 0, 0]])
+    pred_test = np.asarray([[0, 0, 1,0, 0, 0], [0, 0, 1,0, 0, 0], [1, 0, 0,0, 0, 0]])
+    label_test = np.asarray([[1, 0, 0,0, 0, 0], [0, 0, 1,0, 0, 0], [1, 0, 0,0, 0, 0]])
     np.savetxt("test2.csv", generate_confusion_matrix(pred_test, label_test), delimiter=',')
     print("precision test: " + str(compute_ma_precision_recall(pred_test, label_test)))
-    plot_ROC(pred_test, label_test)
+    plot_ROC(pred_test, label_test,'test_img.jpeg')
 
 # convert softmax output to binary values
 def format_predictions(softmax_output):
@@ -124,24 +124,9 @@ def compute_ma_F1Score(preds, labels):
     return 2/((1/ma_recall) + (1/ma_precision))
 
 # plot ROC curves for multilabel
-def plot_ROC(preds, labels):
+def plot_ROC(preds, labels, save_path):
     predict_labels = format_predictions(preds)
     n_classes = labels.shape[1]
-    # tp_arr = np.zeros(6)
-    # fp_arr = np.zeros(6)
-    # tp_arr[0] = len([x for x in labels if np.argmax(x) == 0])
-    # tp_arr[1] = len([x for x in labels if np.argmax(x) == 1])
-    # tp_arr[2] = len([x for x in labels if np.argmax(x) == 2])
-    # tp_arr[3] = len([x for x in labels if np.argmax(x) == 3])
-    # tp_arr[4] = len([x for x in labels if np.argmax(x) == 4])
-    # tp_arr[5] = len([x for x in labels if np.argmax(x) == 5])
-
-    # fp_arr[0] = max(len([x for x in predict_labels if np.argmax(x) == 0]) - tp_arr[0],0)
-    # fp_arr[1] = max(len([x for x in predict_labels if np.argmax(x) == 1]) - tp_arr[1],0)
-    # fp_arr[2] = max(len([x for x in predict_labels if np.argmax(x) == 2]) - tp_arr[2],0)
-    # fp_arr[3] = max(len([x for x in predict_labels if np.argmax(x) == 3]) - tp_arr[3],0)
-    # fp_arr[4] = max(len([x for x in predict_labels if np.argmax(x) == 4]) - tp_arr[4],0)
-    # fp_arr[5] = max(len([x for x in predict_labels if np.argmax(x) == 5]) - tp_arr[5],0)
     
     
     fpr = dict()
@@ -172,6 +157,7 @@ def plot_ROC(preds, labels):
     roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
     # Plot all ROC curves
+    lw = 2
     plt.figure()
     plt.plot(fpr["micro"], tpr["micro"],
             label='micro-average ROC curve (area = {0:0.2f})'
@@ -183,19 +169,20 @@ def plot_ROC(preds, labels):
                 ''.format(roc_auc["macro"]),
             color='navy', linestyle=':', linewidth=4)
 
-    colors = cycle(['aqua', 'darkorange', 'cornflowerblue'])
+    colors = cycle(['purple','magenta','aqua','cornflowerblue','lime','darkorange'])
+    classes = ['glass','paper','cardboard','plastic','metal','trash']
     for i, color in zip(range(n_classes), colors):
         plt.plot(fpr[i], tpr[i], color=color, lw=lw,
                 label='ROC curve of class {0} (area = {1:0.2f})'
-                ''.format(i, roc_auc[i]))
+                ''.format(classes[i], roc_auc[i]))
 
     plt.plot([0, 1], [0, 1], 'k--', lw=lw)
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('Some extension of Receiver operating characteristic to multi-class')
     plt.legend(loc="lower right")
+    plt.savefig(save_path)
     plt.show()
 
 

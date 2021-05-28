@@ -10,7 +10,7 @@ def main():
 	print("----------Getting data----------")
 	X1, y1 = data_proc.get_batch('archive/one-indexed-files-notrash_train.txt',224,224)
 	print("----------Adding augmented data----------")
-	aug_X1,aug_y1 = data_proc.get_aug(X1,y1,[146, 97, 213, 153, 214, 409])
+	aug_X1,aug_y1 = data_proc.get_aug(X1,y1,[646, 597, 0, 653, 714, 0])#[146, 97, 0, 153, 214, 0]) #[146, 97, 213, 153, 214, 409])
 	X1.extend(aug_X1)
 	y1.extend(aug_y1)
 	X_train = np.array(X1)
@@ -25,7 +25,7 @@ def main():
 
 	# Train our model on output of Resnet50
 	print("----------Training our DLNN----------")
-	our_model = util.neural_network(A_transfer, y_train,[1024,256,64,16,6],epochs = 10,lambd=5e-3)
+	our_model = util.neural_network(A_transfer, y_train,[1024,256,64,16,6],epochs = 5,lambd=1e-4)
 	print(our_model.summary())
 
 	# Prediction on training data
@@ -75,6 +75,9 @@ def main():
 	print(f"Precision = {prec}")
 	print(f"Recall = {recall}")
 	print(f"F1 score = {F1}")
+
+	# confusion_matrix.plot_ROC(y_train_pred, y_train,'DenseNet_ROC_train.jpeg')
+	confusion_matrix.plot_ROC(y_valid_pred, y_valid,'DenseNet_ROC_valid.jpeg')
 
 
 
