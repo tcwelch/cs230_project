@@ -43,8 +43,6 @@ def main():
 	# -------- Printing metrics for Training and Validation -------
 	acc = confusion_matrix.compute_accuracy(y_train_pred, y_train)
 	recall, prec = confusion_matrix.compute_ma_precision_recall(y_train_pred, y_train)
-	# prec = confusion_matrix.compute_ma_precision(y_train_pred, y_train)
-	# recall = confusion_matrix.compute_ma_recall(y_train_pred, y_train)
 	F1 = confusion_matrix.compute_ma_F1Score(y_train_pred, y_train)
 
 	print("Metrics for Training - ResNet50:")
@@ -55,8 +53,6 @@ def main():
 
 	acc = confusion_matrix.compute_accuracy(y_valid_pred, y_valid)
 	recall, prec = confusion_matrix.compute_ma_precision_recall(y_valid_pred, y_valid)
-	# prec = confusion_matrix.compute_ma_precision(y_valid_pred, y_valid)
-	# recall = confusion_matrix.compute_ma_recall(y_valid_pred, y_valid)
 	F1 = confusion_matrix.compute_ma_F1Score(y_valid_pred, y_valid)
 
 	print("Metrics for Validation - ResNet50:")

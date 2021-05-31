@@ -10,9 +10,8 @@ def main():
 	print("----------Getting data----------")
 	X1, y1 = data_proc.get_batch('archive/one-indexed-files-notrash_train.txt',224,224)
 	print("----------Adding augmented data----------")
-	# aug_X1,aug_y1 = data_proc.get_aug(X1,y1,[646, 597, 713, 653, 714, 909])#[146, 97, 0, 153, 214, 0]) #[146, 97, 213, 153, 214, 409])
-	# X1.extend(aug_X1)
-	# y1.extend(aug_y1)
+	aug_X1,aug_y1 = data_proc.get_aug(X1,y1,[646, 597, 713, 653, 714, 909])
+	y1.extend(aug_y1)
 	X_train = np.array(X1)
 	y_train = np.array(y1)
 	m = X_train.shape[0]
@@ -71,7 +70,6 @@ def main():
 	print("----------Computing Metrics----------")
 	acc = confusion_matrix.compute_accuracy(y_train_pred, y_train)
 	recall, prec = confusion_matrix.compute_ma_precision_recall(y_train_pred, y_train)
-	# recall = confusion_matrix.compute_ma_recall(y_train_pred, y_train)
 	F1 = confusion_matrix.compute_ma_F1Score(y_train_pred, y_train)
 
 	print("Metrics for Training - DenseNet121:")
@@ -82,7 +80,6 @@ def main():
 
 	acc = confusion_matrix.compute_accuracy(y_valid_pred, y_valid)
 	recall, prec = confusion_matrix.compute_ma_precision_recall(y_valid_pred, y_valid)
-	# recall = confusion_matrix.compute_ma_recall(y_valid_pred, y_valid)
 	F1 = confusion_matrix.compute_ma_F1Score(y_valid_pred, y_valid)
 
 	print("Metrics for Validation - DenseNet121:")
@@ -93,7 +90,6 @@ def main():
 
 	acc = confusion_matrix.compute_accuracy(y_test_pred, y_test)
 	recall, prec = confusion_matrix.compute_ma_precision_recall(y_test_pred, y_test)
-	# recall = confusion_matrix.compute_ma_recall(y_valid_pred, y_valid)
 	F1 = confusion_matrix.compute_ma_F1Score(y_test_pred, y_test)
 
 	print("Metrics for Test - DenseNet121:")
