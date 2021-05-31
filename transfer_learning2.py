@@ -10,9 +10,9 @@ def main():
 	print("----------Getting data----------")
 	X1, y1 = data_proc.get_batch('archive/one-indexed-files-notrash_train.txt',224,224)
 	print("----------Adding augmented data----------")
-	aug_X1,aug_y1 = data_proc.get_aug(X1,y1,[646, 597, 0, 653, 714, 0])#[146, 97, 0, 153, 214, 0]) #[146, 97, 213, 153, 214, 409])
-	X1.extend(aug_X1)
-	y1.extend(aug_y1)
+	# aug_X1,aug_y1 = data_proc.get_aug(X1,y1,[646, 597, 713, 653, 714, 909])#[146, 97, 0, 153, 214, 0]) #[146, 97, 213, 153, 214, 409])
+	# X1.extend(aug_X1)
+	# y1.extend(aug_y1)
 	X_train = np.array(X1)
 	y_train = np.array(y1)
 	m = X_train.shape[0]
@@ -45,12 +45,27 @@ def main():
 	A_transfer = np.reshape(util.normalize(A_transfer),(m,-1)) # sized at (m,7*7*2048)
 
 	# Prediction on validation data
-	print("----------Predicting on training set----------")
+	print("----------Predicting on validation set----------")
 	y_valid_pred = our_model.predict(A_transfer)
 
 	np.savetxt("confusion_matrix_valid_DenseNet.csv", confusion_matrix.generate_confusion_matrix(y_valid_pred, y_valid), delimiter=',')
 
 
+	#------ Testing ------
+	# Run validation data through RestNet50
+	print("----------Processing data in transfer network (Testing data) ----------")
+	X3, y3 = data_proc.get_batch('archive/one-indexed-files-notrash_test.txt',224,224)
+	X_test = np.array(X3)
+	y_test = np.array(y3)
+	m = X_test.shape[0]
+	A_transfer = transfer_model.predict(util.normalize(X_test)) # sized at (m,7,7,2048)
+	A_transfer = np.reshape(util.normalize(A_transfer),(m,-1)) # sized at (m,7*7*2048)
+
+	# Prediction on validation data
+	print("----------Predicting on test set----------")
+	y_test_pred = our_model.predict(A_transfer)
+
+	np.savetxt("confusion_matrix_test_DenseNet.csv", confusion_matrix.generate_confusion_matrix(y_test_pred, y_test), delimiter=',')
 
 	# -------- Printing metrics for Training and Validation -------
 	print("----------Computing Metrics----------")
@@ -76,8 +91,18 @@ def main():
 	print(f"Recall = {recall}")
 	print(f"F1 score = {F1}")
 
-	# confusion_matrix.plot_ROC(y_train_pred, y_train,'DenseNet_ROC_train.jpeg')
-	confusion_matrix.plot_ROC(y_valid_pred, y_valid,'DenseNet_ROC_valid.jpeg')
+	acc = confusion_matrix.compute_accuracy(y_test_pred, y_test)
+	recall, prec = confusion_matrix.compute_ma_precision_recall(y_test_pred, y_test)
+	# recall = confusion_matrix.compute_ma_recall(y_valid_pred, y_valid)
+	F1 = confusion_matrix.compute_ma_F1Score(y_test_pred, y_test)
+
+	print("Metrics for Test - DenseNet121:")
+	print(f"Accuracy = {acc}")
+	print(f"Precision = {prec}")
+	print(f"Recall = {recall}")
+	print(f"F1 score = {F1}")
+
+	confusion_matrix.plot_ROC(y_test_pred, y_test,'DenseNet_ROC_test.jpeg')
 
 
 
